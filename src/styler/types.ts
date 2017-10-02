@@ -5,5 +5,6 @@ export type ChangedValues = string[];
 export type Config = {
   onRead: (key: string, props: Props) => any,
   onRender: (state: State, props: Props, changedValues: ChangedValues) => void,
-  aliasMap?: { [key: string]: string }
+  aliasMap?: { [key: string]: string },
+  useCache?: boolean
 };

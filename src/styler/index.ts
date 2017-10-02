@@ -1,7 +1,7 @@
 import { onFrameRender } from 'framesync';
 import { State, Props, Config, ChangedValues } from './types';
 
-const createStyler = ({ onRead, onRender, aliasMap = {} }: Config) => (props: Props = { cache: true }) => {
+const createStyler = ({ onRead, onRender, aliasMap = {}, useCache = true }: Config) => (props?: Props) => {
   const state: State = {};
   const changedValues: ChangedValues = [];
   let hasChanged: boolean = false;
@@ -18,13 +18,16 @@ const createStyler = ({ onRead, onRender, aliasMap = {} }: Config) => (props: Pr
 
   const render = () => {
     onRender(state, props, changedValues);
+    hasChanged = false;
+    changedValues.length = 0;
   };
 
   return {
     get: function (unmappedKey: string) {
       const key = aliasMap[unmappedKey] || unmappedKey;
+
       return (key)
-        ? (props.cache && state[key] !== undefined)
+        ? (useCache && state[key] !== undefined)
           ? state[key]
           : onRead(key, props)
         : state;
@@ -44,9 +47,6 @@ const createStyler = ({ onRead, onRender, aliasMap = {} }: Config) => (props: Pr
     },
     render: function (forceRender = false) {
       if (forceRender || hasChanged) render();
-
-      hasChanged = false;
-      changedValues.length = 0;
 
       return this;
     }

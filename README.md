@@ -1,6 +1,6 @@
 # Stylefire
 
-### Style-setters for CSS, SVG and scroll, optimized for use in animation.
+### Style-setters for CSS, SVG and scroll, optimized for animation.
 
 [![npm version](https://img.shields.io/npm/v/stylefire.svg?style=flat-square)](https://www.npmjs.com/package/stylefire)
 [![npm downloads](https://img.shields.io/npm/dm/stylefire.svg?style=flat-square)](https://www.npmjs.com/package/stylefire)
@@ -42,7 +42,7 @@ divStyler.set({
 });
 ```
 
-[View on CodePen]()
+**[Demo on CodePen]()**
 
 #### Line drawing
 
@@ -57,7 +57,7 @@ tween({ to: 100 })
   .start((v) => path.set('pathLength', v));
 ```
 
-[View on CodePen]()
+**[Demo on CodePen](https://codepen.io/popmotion/pen/JryxRb)**
 
 #### Overriding render batching
 
@@ -82,9 +82,4 @@ divStyler.render();
 console.log(div.offsetWidth); // 100
 ```
 
-[View on CodePen]()
-
-
-TODO:
- - Test caching, SVG, SVG path
- - Export absolute typescript paths to relative
+**[Demo on CodePen](https://codepen.io/popmotion/pen/pWrGym)**
