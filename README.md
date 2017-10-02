@@ -42,7 +42,7 @@ divStyler.set({
 });
 ```
 
-**[Demo on CodePen]()**
+**[Demo on CodePen](https://codepen.io/popmotion/pen/PJKrQo)**
 
 ### Line drawing
 
@@ -85,4 +85,4 @@ console.log(div.offsetWidth); // 100
 **[Demo on CodePen](https://codepen.io/popmotion/pen/pWrGym)**
 
 ## Supported by
-[![DriveTribe Open Source](https://user-images.githubusercontent.com/7850794/31086561-107648a4-a792-11e7-88bf-a0c0cfcafb79.png)](https://medium.com/drivetribe-engineering)
+[![DriveTribe Open Source](https://user-images.githubusercontent.com/7850794/31086561-107648a4-a792-11e7-88bf-a0c0cfcafb79.png | width=400)](https://medium.com/drivetribe-engineering)
