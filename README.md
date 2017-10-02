@@ -83,3 +83,6 @@ console.log(div.offsetWidth); // 100
 ```
 
 **[Demo on CodePen](https://codepen.io/popmotion/pen/pWrGym)**
+
+## Supported by
+
