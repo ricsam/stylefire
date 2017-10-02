@@ -12,7 +12,7 @@
 - **Line drawing:** Full support for SVG path line drawing, simplified to use percentage-based measurements.
 - **Cross-browser:** Detects and uses vendor CSS prefixes when necessary.
 - **Extendable:** Easy to create performant stylers for other rendering targets.
-- **Type-safe:** Written in TypeScript, with Flow definitions available from [flow-typed](https://github.com/flowtype/flow-typed).
+- **Type-safe:** Written in TypeScript, with Flow definitions available from [flow-typed](https://github.com/flowtype/flow-typed). 'Cause animators love typesafety :)
 
 ## Install
 
