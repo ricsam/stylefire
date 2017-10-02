@@ -85,4 +85,4 @@ console.log(div.offsetWidth); // 100
 **[Demo on CodePen](https://codepen.io/popmotion/pen/pWrGym)**
 
 ## Supported by
-<img src="https://user-images.githubusercontent.com/7850794/31086561-107648a4-a792-11e7-88bf-a0c0cfcafb79.png" width="400" alt="DriveTribe Open Source">
+<img src="https://user-images.githubusercontent.com/7850794/31086561-107648a4-a792-11e7-88bf-a0c0cfcafb79.png" width="300" alt="DriveTribe Open Source">
