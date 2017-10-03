@@ -46,6 +46,7 @@ divStyler.set({
   scale: 0.5,
   x: 100,
   y: 100,
+  rotate: 45,
   background: '#f00'
 });
 ```
