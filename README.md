@@ -54,7 +54,7 @@ const path = document.querySelector('path');
 const pathStyler = svg(path);
 
 tween({ to: 100 })
-  .start((v) => path.set('pathLength', v));
+  .start((v) => pathStyler.set('pathLength', v));
 ```
 
 **[Demo on CodePen](https://codepen.io/popmotion/pen/JryxRb)**
