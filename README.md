@@ -23,7 +23,7 @@ npm install stylefire --save
 ## [Documentation](https://popmotion.io/api/stylefire)
 - [CSS](https://popmotion.io/api/css)
 - [SVG](https://popmotion.io/api/svg)
-- [DOM Scroll](https://popmotion.io/api/dom-scroll)
+- [DOM Scroll](https://popmotion.io/api/scroll)
 
 ## Examples
 
