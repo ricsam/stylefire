@@ -46,6 +46,8 @@ divStyler.set({
 
 ### Line drawing
 
+Stylefire simplifies [SVG line drawing](https://css-tricks.com/svg-line-animation-works/). It works out the total path length and allows you to set `pathLength`, `pathSpacing` and `pathOffset` properties as percentages:
+
 ```javascript
 import { tween } from 'popmotion';
 import svg from 'stylefire/svg';
@@ -58,6 +60,8 @@ tween({ to: 100 })
 ```
 
 **[Demo on CodePen](https://codepen.io/popmotion/pen/JryxRb)**
+
+`stroke-dasharray` and `stroke-dashoffset` are still supported if you wish to work with these attributes directly.
 
 ### Overriding render batching
 
