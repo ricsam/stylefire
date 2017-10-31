@@ -2,6 +2,12 @@
 
 Stylefire adheres to [Semantic Versioning](http://semver.org/).
 
+## [1.1.4] 2017-10-31
+
+### Changed
+
+Changing return type of `Setter` from `void` to `any`.
+
 ## [1.1.3] 2017-10-31
 
 ### Fixed
