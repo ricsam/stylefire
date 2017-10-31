@@ -1,5 +1,5 @@
 import { onFrameRender } from 'framesync';
-import { State, Props, Config, ChangedValues } from './types';
+import { ChangedValues, Config, Props, State } from './types';
 
 const createStyler = ({ onRead, onRender, aliasMap = {}, useCache = true }: Config) => (props?: Props) => {
   const state: State = {};
@@ -23,7 +23,7 @@ const createStyler = ({ onRead, onRender, aliasMap = {}, useCache = true }: Conf
   };
 
   return {
-    get: function (unmappedKey: string) {
+    get(unmappedKey: string) {
       const key = aliasMap[unmappedKey] || unmappedKey;
 
       return (key)
@@ -32,12 +32,21 @@ const createStyler = ({ onRead, onRender, aliasMap = {}, useCache = true }: Conf
           : onRead(key, props)
         : state;
     },
-    set: function (values: string | State, value?: any) {
-      if (typeof values === 'string') {
-        setValue(values, value);
+    set(values: string | State, value?: any) {
+      if (typeof values === "string") {
+        if (value !== undefined) {
+          setValue(values, value);
+        } else {
+          return (v: any) => {
+            setValue(values, v);
+            if (hasChanged) onFrameRender(render);
+          }
+        }
       } else {
         for (const key in values) {
-          setValue(key, values[key]);
+          if (values.hasOwnProperty(key)) {
+            setValue(key, values[key]);
+          }
         }
       }
 
@@ -45,11 +54,11 @@ const createStyler = ({ onRead, onRender, aliasMap = {}, useCache = true }: Conf
 
       return this;
     },
-    render: function (forceRender = false) {
+    render(forceRender = false) {
       if (forceRender || hasChanged) render();
 
       return this;
-    }
+    },
   };
 };
 

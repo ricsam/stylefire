@@ -2,6 +2,12 @@
 
 Stylefire adheres to [Semantic Versioning](http://semver.org/).
 
+## [1.1.0] 2017-10-31
+
+### Added
+
+`set` now returns a curried setter function if only provided a `key` argument.
+
 ## [1.0.1] 2017-10-02
 
 ### Added
