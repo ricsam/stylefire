@@ -9,7 +9,7 @@ export type Config = {
   useCache?: boolean
 };
 
-export type Setter = (value: any) => void;
+export type Setter = (value: any) => any;
 
 export type Styler = {
   get: (key: string) => any;
