@@ -8,3 +8,11 @@ export type Config = {
   aliasMap?: { [key: string]: string },
   useCache?: boolean
 };
+
+export type Setter = (value: any) => void;
+
+export type Styler = {
+  get: (key: string) => any;
+  set: (values: string | State, value?: any) => Styler | Setter;
+  render: (forceRender?: boolean) => Styler;
+};

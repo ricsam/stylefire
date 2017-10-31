@@ -1,7 +1,7 @@
 import { onFrameRender } from 'framesync';
-import { ChangedValues, Config, Props, State } from './types';
+import { ChangedValues, Config, Props, State, Styler } from './types';
 
-const createStyler = ({ onRead, onRender, aliasMap = {}, useCache = true }: Config) => (props?: Props) => {
+const createStyler = ({ onRead, onRender, aliasMap = {}, useCache = true }: Config) => (props?: Props): Styler => {
   const state: State = {};
   const changedValues: ChangedValues = [];
   let hasChanged: boolean = false;
@@ -33,14 +33,14 @@ const createStyler = ({ onRead, onRender, aliasMap = {}, useCache = true }: Conf
         : state;
     },
     set(values: string | State, value?: any) {
-      if (typeof values === "string") {
+      if (typeof values === 'string') {
         if (value !== undefined) {
           setValue(values, value);
         } else {
           return (v: any) => {
             setValue(values, v);
             if (hasChanged) onFrameRender(render);
-          }
+          };
         }
       } else {
         for (const key in values) {

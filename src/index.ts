@@ -1,9 +1,10 @@
 import css from './css';
+import createStyler from './styler';
+import { Styler } from './styler/types';
 import svg from './svg';
-import _createStyler from './styler';
 
-export default function (node: (SVGGraphicsElement & SVGPathElement) | HTMLElement) {
+export default function(node: (SVGGraphicsElement & SVGPathElement) | HTMLElement): Styler {
   return (node instanceof SVGGraphicsElement) ? svg(node) : css(node);
-};
+}
 
-export const createStyler = _createStyler;
+export { createStyler };
