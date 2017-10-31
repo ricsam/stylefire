@@ -7,4 +7,4 @@ export default function(node: (SVGGraphicsElement & SVGPathElement) | HTMLElemen
   return (node instanceof SVGGraphicsElement) ? svg(node) : css(node);
 }
 
-export { createStyler };
+export { createStyler, Styler };
