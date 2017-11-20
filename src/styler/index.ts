@@ -10,10 +10,15 @@ const createStyler = ({ onRead, onRender, aliasMap = {}, useCache = true }: Conf
     const key = aliasMap[unmappedKey] || unmappedKey;
     const currentValue = state[key];
     state[key] = value;
+
     if (state[key] !== currentValue) {
       hasChanged = true;
-      changedValues.push(key);
+      if (changedValues.indexOf(key) !== -1) {
+        changedValues.push(key);
+      }
     }
+
+    if (hasChanged) onFrameRender(render);
   };
 
   const render = () => {
@@ -37,10 +42,7 @@ const createStyler = ({ onRead, onRender, aliasMap = {}, useCache = true }: Conf
         if (value !== undefined) {
           setValue(values, value);
         } else {
-          return (v: any) => {
-            setValue(values, v);
-            if (hasChanged) onFrameRender(render);
-          };
+          return (v: any) => setValue(values, v);
         }
       } else {
         for (const key in values) {
@@ -49,8 +51,6 @@ const createStyler = ({ onRead, onRender, aliasMap = {}, useCache = true }: Conf
           }
         }
       }
-
-      if (hasChanged) onFrameRender(render);
 
       return this;
     },
