@@ -25,8 +25,6 @@ npm install stylefire --save
 - [SVG](https://popmotion.io/api/svg)
 - [DOM Scroll](https://popmotion.io/api/scroll)
 
-## Examples
-
 ### Setting CSS properties
 
 Stylefire will automatically detect and set **vendor prefixes** for newer CSS properties.

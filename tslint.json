@@ -14,7 +14,8 @@
         "max-line-length":false,
         "curly": false,
         "prefer-for-of": false,
-        "member-access": false
+        "member-access": false,
+        "space-before-function-parent": false
     },
     "rulesDirectory": []
 }
