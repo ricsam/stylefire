@@ -13,7 +13,7 @@ const createStyler = ({ onRead, onRender, aliasMap = {}, useCache = true }: Conf
 
     if (state[key] !== currentValue) {
       hasChanged = true;
-      if (changedValues.indexOf(key) !== -1) {
+      if (changedValues.indexOf(key) === -1) {
         changedValues.push(key);
       }
     }

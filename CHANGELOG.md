@@ -2,6 +2,12 @@
 
 Stylefire adheres to [Semantic Versioning](http://semver.org/).
 
+## [1.1.7] 2017-11-19
+
+### Fixed
+
+- Actually ensuring changed values only get added if not already present.
+
 ## [1.1.5] 2017-11-19
 
 ### Fixed
