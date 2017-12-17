@@ -8,7 +8,7 @@ export default function(nodeOrSelector: Element | string): Styler {
     ? document.querySelector(nodeOrSelector)
     : nodeOrSelector;
 
-  return (node instanceof SVGGraphicsElement) ? svg(node) : css(node as HTMLElement);
+  return (node instanceof SVGElement) ? svg(node) : css(node as HTMLElement);
 }
 
 export { createStyler, Styler };
