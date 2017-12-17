@@ -12,7 +12,7 @@ type SVGProps = {
     width: number,
     height: number
   },
-  element: SVGGraphicsElement,
+  element: SVGElement,
   isPath: boolean,
   pathLength?: number
 };
@@ -36,7 +36,7 @@ const svgStyler = createStyler({
   }
 });
 
-export default (element: SVGGraphicsElement | SVGPathElement): Styler => {
+export default (element: SVGElement | SVGPathElement): Styler => {
   const { x, y, width, height } = element.getBBox();
   const props: SVGProps = {
     element,
