@@ -37,7 +37,7 @@ const svgStyler = createStyler({
 });
 
 export default (element: SVGElement | SVGPathElement): Styler => {
-  const { x, y, width, height } = element.getBBox();
+  const { x, y, width, height } = (element as SVGGraphicsElement).getBBox();
   const props: SVGProps = {
     element,
     dimensions: { x, y, width, height },
