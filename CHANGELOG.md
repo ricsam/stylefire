@@ -2,6 +2,16 @@
 
 Stylefire adheres to [Semantic Versioning](http://semver.org/).
 
+## [1.1.8] 2018-01-03
+
+### Added
+
+- `max-width` and `max-height` as supported value types.
+
+### Fixed
+
+- Fixing IE11 bug.
+
 ## [1.1.7] 2017-11-19
 
 ### Fixed
