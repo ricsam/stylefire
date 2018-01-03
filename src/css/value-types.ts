@@ -18,7 +18,8 @@ const valueTypes: { [key: string]: ValueType } = {
 
   // Positioning
   width: px,
-  height: px,  
+  height: px,
+  maxHeight: px,
   top: px,
   left: px,
   bottom: px,
