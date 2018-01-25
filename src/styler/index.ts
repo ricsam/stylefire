@@ -12,13 +12,14 @@ const createStyler = ({ onRead, onRender, aliasMap = {}, useCache = true }: Conf
     state[key] = value;
 
     if (state[key] !== currentValue) {
-      hasChanged = true;
       if (changedValues.indexOf(key) === -1) {
         changedValues.push(key);
       }
+      if (!hasChanged) {
+        hasChanged = true;
+        onFrameRender(render);
+      }
     }
-
-    if (hasChanged) onFrameRender(render);
   };
 
   const render = () => {
