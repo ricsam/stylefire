@@ -16,7 +16,7 @@ const viewportScrollStyler = createStyler({
   useCache: false,
   onRead: (key) => {
     if (typeof window === 'undefined') return 0;
-    return (key === 'top') ? window.pageXOffset : window.pageXOffset;
+    return (key === 'top') ? window.pageYOffset : window.pageXOffset;
   },
   onRender: ({ top = 0, left = 0 }) => {
     if (typeof window !== 'undefined' && typeof top === 'number' && typeof left === 'number') {
