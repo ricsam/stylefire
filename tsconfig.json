@@ -9,6 +9,7 @@
     "noUnusedLocals": true,
     "target": "es5",
     "rootDir": "src",
+    "lib": ["es5", "es6", "dom"],
     "outDir": "./",
     "watch": false,
     "baseUrl": "src/",

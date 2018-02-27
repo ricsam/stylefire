@@ -18,14 +18,14 @@ export default function buildStylePropertyString(
   // and if true add all transform values
   const numChangedValues = changedValues.length;
   for (let i = 0; i < numChangedValues; i++) {
-    let key = changedValues[i];
+    const key = changedValues[i];
 
     // If this is a transform property, add all other transform props
     // to changedValues and then break
     if (isTransformProp(key)) {
       hasTransform = true;
 
-      for (let stateKey in state) {
+      for (const stateKey in state) {
         if (isTransformProp(stateKey) && changedValues.indexOf(stateKey) === -1) {
           changedValues.push(stateKey);
         }
@@ -41,7 +41,7 @@ export default function buildStylePropertyString(
   // a transform property and CSS vars and handle accordingly
   const totalNumChangedValues = changedValues.length;
   for (let i = 0; i < totalNumChangedValues; i++) {
-    let key = changedValues[i];
+    const key = changedValues[i];
     let value: any = state[key];
 
     // If this is a number or object and we have filter, apply filter

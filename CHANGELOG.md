@@ -2,6 +2,19 @@
 
 Stylefire adheres to [Semantic Versioning](http://semver.org/).
 
+## [1.2.1] 2018-02-27
+
+### Fixed
+
+- Changing `transform-origin-x` and `y` to camel-case.
+
+## [1.2.0] 2018-02-21
+
+### Added
+
+- `styler` maintains an internal cache of stylers. If a node is passed for the second time, it will return the previously-create styler.
+- `translate-origin-x` and `translate-origin-y` default prop types now `percent`.
+
 ## [1.1.8] 2018-01-03
 
 ### Added

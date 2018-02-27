@@ -29,8 +29,8 @@ const cssStyler = createStyler({
     x: 'translateX',
     y: 'translateY',
     z: 'translateZ',
-    originX: 'transform-origin-x',
-    originY: 'transform-origin-y'
+    originX: 'transformOriginX',
+    originY: 'transformOriginY'
   }
 });
 
