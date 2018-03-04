@@ -2,6 +2,12 @@
 
 Stylefire adheres to [Semantic Versioning](http://semver.org/).
 
+## [1.1.9] 2018-02-04
+
+### Fixed
+
+- Returning `scrollTop` correctly [PR #8](https://github.com/Popmotion/stylefire/pull/8)
+
 ## [1.1.8] 2018-01-03
 
 ### Added
