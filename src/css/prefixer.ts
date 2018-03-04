@@ -1,10 +1,8 @@
 import { camelToDash } from '../styler/utils';
 
-type StringMap = { [key: string]: string };
-
-const camelCache: StringMap = {};
-const dashCache: StringMap = {};
-const prefixes: string[] = ['Webkit','Moz','O','ms', ''];
+const camelCache = new Map();
+const dashCache = new Map();
+const prefixes: string[] = ['Webkit', 'Moz', 'O', 'ms', ''];
 const numPrefixes = prefixes.length;
 
 let testElement: HTMLElement;
@@ -24,8 +22,8 @@ const testPrefix = (key: string) => {
     const prefixedPropertyName = noPrefix ? key : prefix + key.charAt(0).toUpperCase() + key.slice(1);
 
     if (prefixedPropertyName in testElement.style) {
-      camelCache[key] = prefixedPropertyName;
-      dashCache[key] = `${(noPrefix ? '' : '-')}${camelToDash(prefixedPropertyName)}`;
+      camelCache.set(key, prefixedPropertyName);
+      dashCache.set(key, `${(noPrefix ? '' : '-')}${camelToDash(prefixedPropertyName)}`);
     }
   }
 };
@@ -33,7 +31,7 @@ const testPrefix = (key: string) => {
 export default (key: string, asDashCase: boolean = false) => {
   const cache = asDashCase ? dashCache : camelCache;
 
-  if (!cache[key]) testPrefix(key);
+  if (!cache.has(key)) testPrefix(key);
 
-  return cache[key];
+  return cache.get(key);
 };

@@ -1,4 +1,4 @@
-import { alpha, color, degrees, scale, px, ValueType } from 'style-value-types';
+import { alpha, color, degrees, scale, px, percent, ValueType } from 'style-value-types';
 
 const valueTypes: { [key: string]: ValueType } = {
   // Color props
@@ -42,7 +42,9 @@ const valueTypes: { [key: string]: ValueType } = {
   translateY: px,
   translateZ: px,
   perspective: px,
-  opacity: alpha
+  opacity: alpha,
+  transformOriginX: percent,
+  transformOriginY: percent
 };
 
 export default (key: string) => valueTypes[key];
