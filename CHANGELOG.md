@@ -2,6 +2,30 @@
 
 Stylefire adheres to [Semantic Versioning](http://semver.org/).
 
+## [1.2.6] 2018-03-06
+
+### Added
+
+- Exposing `buildStyles` (undocumented)
+
+## [1.2.4] 2018-03-06
+
+### Added
+
+- `props` can now be passed to `styler`.
+
+## [1.2.4] 2018-03-04
+
+### Fixed
+
+- `css.onRead` can now return raw output values by passing `preparseValues: false` - in `2.0.0` this will default to `false`.
+
+## [1.2.3] 2018-03-04
+
+### Fixed
+
+- `css.onRead` now correctly requesting props as dash-case.
+
 ## [1.2.2] 2018-03-04
 
 ### Fixed

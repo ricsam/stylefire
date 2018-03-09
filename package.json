@@ -1,6 +1,6 @@
 {
   "name": "stylefire",
-  "version": "1.2.2",
+  "version": "1.2.6",
   "description": "Performant, simplified stylers for CSS, SVG, path and DOM scroll.",
   "main": "index.js",
   "types": "index.d.ts",
