@@ -2,11 +2,53 @@
 
 Stylefire adheres to [Semantic Versioning](http://semver.org/).
 
-## [1.2.2] 2018-03-13
+## [1.2.9] 2018-03-13
 
-### Updated
+### Fixed
 
-- Fixing types for `styler.set`.
+- Reverting `Styler` types :(
+
+## [1.2.8] 2018-03-13
+
+### Fixed
+
+- Changing `Styler` type to interface.
+
+## [1.2.7] 2018-03-13
+
+### Fixed
+
+- Updating `styler.set` type.
+
+## [1.2.6] 2018-03-06
+
+### Added
+
+- Exposing `buildStyles` (undocumented)
+
+## [1.2.4] 2018-03-06
+
+### Added
+
+- `props` can now be passed to `styler`.
+
+## [1.2.4] 2018-03-04
+
+### Fixed
+
+- `css.onRead` can now return raw output values by passing `preparseValues: false` - in `2.0.0` this will default to `false`.
+
+## [1.2.3] 2018-03-04
+
+### Fixed
+
+- `css.onRead` now correctly requesting props as dash-case.
+
+## [1.2.2] 2018-03-04
+
+### Fixed
+
+- Upgrading `style-value-types` to `1.0.4`
 
 ## [1.2.1] 2018-02-27
 
@@ -20,6 +62,12 @@ Stylefire adheres to [Semantic Versioning](http://semver.org/).
 
 - `styler` maintains an internal cache of stylers. If a node is passed for the second time, it will return the previously-create styler.
 - `translate-origin-x` and `translate-origin-y` default prop types now `percent`.
+
+## [1.1.9] 2018-02-04
+
+### Fixed
+
+- Returning `scrollTop` correctly [PR #8](https://github.com/Popmotion/stylefire/pull/8)
 
 ## [1.1.8] 2018-01-03
 

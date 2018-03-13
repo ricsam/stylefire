@@ -11,12 +11,8 @@ export type Config = {
 
 export type Setter = (value: any) => any;
 
-export type CreateSetter = (key: string) => Setter;
-export type SetMap = (values: State) => Styler;
-export type SetValue = (key: string, value: any) => Styler;
-
-export type Styler = {
+export interface Styler {
   get: (key: string) => any;
-  set: CreateSetter | SetMap | SetValue;
+  set: (key: string | State, value?: any) => Styler | Setter;
   render: (forceRender?: boolean) => Styler;
-};
+}

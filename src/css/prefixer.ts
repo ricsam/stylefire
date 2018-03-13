@@ -14,6 +14,8 @@ let testElement: HTMLElement;
   @return [string]: Cached property name
 */
 const testPrefix = (key: string) => {
+  if (typeof document === 'undefined') return;
+
   testElement = testElement || document.createElement('div');
 
   for (let i = 0; i < numPrefixes; i++) {
@@ -33,5 +35,5 @@ export default (key: string, asDashCase: boolean = false) => {
 
   if (!cache.has(key)) testPrefix(key);
 
-  return cache.get(key);
+  return cache.get(key) || key;
 };
