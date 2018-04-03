@@ -22,11 +22,15 @@ const createStyler = ({ onRead, onRender, aliasMap = {}, useCache = true }: Conf
     }
   };
 
-  const render = () => {
-    onRender(state, props, changedValues);
-    hasChanged = false;
-    changedValues.length = 0;
-  };
+  function render(forceRender = false) {
+    if (forceRender || hasChanged) {
+      onRender(state, props, changedValues);
+      hasChanged = false;
+      changedValues.length = 0;
+    }
+
+    return this;
+  }
 
   return {
     get(unmappedKey: string) {
@@ -55,11 +59,7 @@ const createStyler = ({ onRead, onRender, aliasMap = {}, useCache = true }: Conf
 
       return this;
     },
-    render(forceRender = false) {
-      if (forceRender || hasChanged) render();
-
-      return this;
-    },
+    render,
   };
 };
 
