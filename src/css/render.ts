@@ -21,6 +21,7 @@ export default function buildStylePropertyString(
   const valuesToChange = (changedValues === true) ? Object.keys(state) : changedValues;
   let propertyString = '';
   let transformString = '';
+  let transformIsDefault = true;
   let hasTransform = false;
   let transformHasZ = false;
 
@@ -52,16 +53,22 @@ export default function buildStylePropertyString(
   const totalNumChangedValues = valuesToChange.length;
   for (let i = 0; i < totalNumChangedValues; i++) {
     const key = valuesToChange[i];
+    const isTransformKey = isTransformProp(key);
     let value: any = state[key];
 
     // If this is a number or object and we have filter, apply filter
     const valueType = getValueType(key);
     if (valueType && (typeof value === 'number' || typeof value === 'object') && valueType.transform) {
+      // We want to check if any transform *isn't* its value type's default, so we can unset the transform
+      // if every transform *is*
+      if (isTransformKey && (valueType.default && value !== valueType.default) || (!valueType.default && value !== 0)) {
+        transformIsDefault = false;
+      }
       value = valueType.transform(value);
     }
 
     // If a transform prop, add to transform string
-    if (isTransformProp(key)) {
+    if (isTransformKey) {
       transformString += key + '(' + value + ') ';
       transformHasZ = (key === 'translateZ') ? true : transformHasZ;
 
@@ -73,11 +80,15 @@ export default function buildStylePropertyString(
 
   // If we have transform props, build a transform string
   if (hasTransform) {
-    if (!transformHasZ && enableHardwareAcceleration) {
-      transformString += 'translateZ(0)';
-    }
+    if (transformIsDefault) {
+      propertyString += ';transform: none';
+    } else {
+      if (!transformHasZ && enableHardwareAcceleration) {
+        transformString += 'translateZ(0)';
+      }
 
-    propertyString += ';' + prefixer('transform', true) + ':' + transformString;
+      propertyString += ';' + prefixer('transform', true) + ':' + transformString;
+    }
   }
 
   return propertyString;
