@@ -2,6 +2,12 @@
 
 Stylefire adheres to [Semantic Versioning](http://semver.org/).
 
+## [1.2.10] 2018-04-04
+
+### Added
+
+- Now setting `transform` to `none` if all transform values are default.
+
 ## [1.2.9] 2018-03-13
 
 ### Fixed
