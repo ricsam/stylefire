@@ -1,4 +1,4 @@
-# <a href="https://popmotion.io/api/stylefire"><img src="https://user-images.githubusercontent.com/7850794/38307473-c62a39c6-380b-11e8-9d9c-91561cb49bba.png" height="119" width="400" alt="Stylefire" /></a>
+# <a href="https://popmotion.io/api/stylefire"><img src="https://user-images.githubusercontent.com/7850794/38307473-c62a39c6-380b-11e8-9d9c-91561cb49bba.png" height="74" width="250" alt="Stylefire" /></a>
 
 ### Style-setters for HTML and SVG, optimized for animation.
 
