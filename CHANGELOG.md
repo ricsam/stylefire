@@ -2,6 +2,12 @@
 
 Stylefire adheres to [Semantic Versioning](http://semver.org/).
 
+## [1.2.11] 2018-04-04
+
+### Fixed
+
+- `originX` and `originY` are now set as a single style value, as `transform-origin-` axis-specific values aren't supported in Firefox.
+
 ## [1.2.10] 2018-04-04
 
 ### Added

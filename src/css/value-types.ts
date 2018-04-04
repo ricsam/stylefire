@@ -44,7 +44,8 @@ const valueTypes: { [key: string]: ValueType } = {
   perspective: px,
   opacity: alpha,
   transformOriginX: percent,
-  transformOriginY: percent
+  transformOriginY: percent,
+  transformOriginZ: px
 };
 
 export default (key: string) => valueTypes[key];
