@@ -29,7 +29,7 @@ export default function buildStylePropertyString(
   state: State,
   changedValues: string[] | true = true,
   enableHardwareAcceleration: boolean = true
- ) {
+) {
   const valuesToChange = (changedValues === true) ? Object.keys(state) : changedValues;
   let propertyString = '';
   let transformString = '';
@@ -72,13 +72,15 @@ export default function buildStylePropertyString(
     // If this is a number or object and we have filter, apply filter
     const valueType = getValueType(key);
 
-    if (valueType && (typeof value === NUMBER || typeof value === OBJECT) && valueType.transform) {
-      // We want to check if any transform *isn't* its value type's default, so we can unset the transform
-      // if every transform *is*
-      if (isTransformKey && (valueType.default && value !== valueType.default) || (!valueType.default && value !== 0)) {
+    // We want to check if any transform *isn't* its value type's default, so we can unset the transform
+    // if every transform *is*
+    if (isTransformKey) {
+      if ((valueType.default && value !== valueType.default) || (!valueType.default && value !== 0)) {
         transformIsDefault = false;
       }
+    }
 
+    if (valueType && (typeof value === NUMBER || typeof value === OBJECT) && valueType.transform) {
       value = valueType.transform(value);
     }
 
@@ -91,7 +93,7 @@ export default function buildStylePropertyString(
       state[key] = value;
       hasTransformOrigin = true;
 
-    // Or if a simple CSS property, set
+      // Or if a simple CSS property, set
     } else {
       propertyString += styleRule(prefixer(key, true), value);
     }

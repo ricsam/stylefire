@@ -2,6 +2,12 @@
 
 Stylefire adheres to [Semantic Versioning](http://semver.org/).
 
+## [1.2.12] 2018-04-04
+
+### Fixed
+
+- `transform: none` was being set if any `transform` was a string.
+
 ## [1.2.11] 2018-04-04
 
 ### Fixed
