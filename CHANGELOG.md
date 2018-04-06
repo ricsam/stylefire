@@ -2,6 +2,12 @@
 
 Stylefire adheres to [Semantic Versioning](http://semver.org/).
 
+## [1.2.13] 2018-04-06
+
+### Fixed
+
+- Was exporting the wrong `createStyler`! Classic.
+
 ## [1.2.12] 2018-04-04
 
 ### Fixed
