@@ -1,6 +1,6 @@
 {
   "compilerOptions": {
-    "module": "commonjs",
+    "module": "ESNext",
     "noImplicitAny": true,
     "removeComments": true,
     "preserveConstEnums": true,
@@ -10,7 +10,7 @@
     "target": "es5",
     "rootDir": "src",
     "lib": ["es5", "es6", "dom"],
-    "outDir": "./",
+    "outDir": "lib/",
     "watch": false,
     "baseUrl": "src/",
     "alwaysStrict": true,
@@ -20,10 +20,6 @@
       "~/*": ["*"]
     }
   },
-  "include": [
-    "src/**/*"
-  ],
-  "exclude": [
-    "src/_tests"
-  ]
+  "include": ["src/**/*"],
+  "exclude": ["src/_tests"]
 }
