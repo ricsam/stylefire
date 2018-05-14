@@ -3,10 +3,11 @@ export type Props = { [key: string]: any };
 export type ChangedValues = string[];
 
 export type Config = {
-  onRead: (key: string, props: Props) => any,
-  onRender: (state: State, props: Props, changedValues: ChangedValues) => void,
-  aliasMap?: { [key: string]: string },
-  useCache?: boolean
+  onRead: (key: string, props: Props) => any;
+  onRender: (state: State, props: Props, changedValues: ChangedValues) => void;
+  aliasMap?: { [key: string]: string };
+  useCache?: boolean;
+  uncachedValues?: Set<string>;
 };
 
 export type Setter = (value: any) => any;

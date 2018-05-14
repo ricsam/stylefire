@@ -1,4 +1,12 @@
-import { alpha, color, degrees, scale, px, percent, ValueType } from 'style-value-types';
+import {
+  alpha,
+  color,
+  degrees,
+  scale,
+  px,
+  percent,
+  ValueType
+} from 'style-value-types';
 
 const valueTypes: { [key: string]: ValueType } = {
   // Color props

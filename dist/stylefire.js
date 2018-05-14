@@ -1,8 +1,8 @@
 (function (global, factory) {
-    typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports, require('framesync'), require('style-value-types')) :
-    typeof define === 'function' && define.amd ? define(['exports', 'framesync', 'style-value-types'], factory) :
-    (factory((global.stylefire = {}),null,global.valueTypes));
-}(this, (function (exports,framesync,styleValueTypes) { 'use strict';
+    typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports, require('framesync'), require('style-value-types'), require('hey-listen')) :
+    typeof define === 'function' && define.amd ? define(['exports', 'framesync', 'style-value-types', 'hey-listen'], factory) :
+    (factory((global.stylefire = {}),null,global.valueTypes,null));
+}(this, (function (exports,framesync,styleValueTypes,heyListen) { 'use strict';
 
     /*! *****************************************************************************
     Copyright (c) Microsoft Corporation. All rights reserved.
@@ -202,11 +202,13 @@
     var TRANSFORM = 'transform';
     var TRANSLATE_Z = 'translateZ';
     var TRANSFORM_NONE = ';transform: none';
-    var styleRule = function (key, value) { return "" + SEMI_COLON + key + COLON + value; };
-    function buildStylePropertyString(state, changedValues, enableHardwareAcceleration) {
+    var styleRule = function (key, value) {
+        return "" + SEMI_COLON + key + COLON + value;
+    };
+    function buildStylePropertyString(state, changedValues, enableHardwareAcceleration, blacklist) {
         if (changedValues === void 0) { changedValues = true; }
         if (enableHardwareAcceleration === void 0) { enableHardwareAcceleration = true; }
-        var valuesToChange = (changedValues === true) ? Object.keys(state) : changedValues;
+        var valuesToChange = changedValues === true ? Object.keys(state) : changedValues;
         var propertyString = '';
         var transformString = '';
         var hasTransformOrigin = false;
@@ -219,7 +221,8 @@
             if (isTransformProp(key)) {
                 hasTransform = true;
                 for (var stateKey in state) {
-                    if (isTransformProp(stateKey) && valuesToChange.indexOf(stateKey) === -1) {
+                    if (isTransformProp(stateKey) &&
+                        valuesToChange.indexOf(stateKey) === -1) {
                         valuesToChange.push(stateKey);
                     }
                 }
@@ -230,20 +233,25 @@
         var totalNumChangedValues = valuesToChange.length;
         for (var i = 0; i < totalNumChangedValues; i++) {
             var key = valuesToChange[i];
+            if (blacklist.has(key))
+                continue;
             var isTransformKey = isTransformProp(key);
             var value = state[key];
             var valueType = getValueType(key);
             if (isTransformKey) {
-                if ((valueType.default && value !== valueType.default) || (!valueType.default && value !== 0)) {
+                if ((valueType.default && value !== valueType.default) ||
+                    (!valueType.default && value !== 0)) {
                     transformIsDefault = false;
                 }
             }
-            if (valueType && (typeof value === NUMBER || typeof value === OBJECT) && valueType.transform) {
+            if (valueType &&
+                (typeof value === NUMBER || typeof value === OBJECT) &&
+                valueType.transform) {
                 value = valueType.transform(value);
             }
             if (isTransformKey) {
                 transformString += key + '(' + value + ') ';
-                transformHasZ = (key === TRANSLATE_Z) ? true : transformHasZ;
+                transformHasZ = key === TRANSLATE_Z ? true : transformHasZ;
             }
             else if (isTransformOriginProp(key)) {
                 state[key] = value;
@@ -254,7 +262,8 @@
             }
         }
         if (hasTransformOrigin) {
-            propertyString += styleRule(TRANSFORM_ORIGIN, (state.transformOriginX || 0) + " " + (state.transformOriginY || 0) + " " + (state.transformOriginZ || 0));
+            propertyString += styleRule(TRANSFORM_ORIGIN, (state.transformOriginX || 0) + " " + (state.transformOriginY ||
+                0) + " " + (state.transformOriginZ || 0));
         }
         if (hasTransform) {
             if (!transformHasZ && enableHardwareAcceleration) {
@@ -265,25 +274,38 @@
         return propertyString;
     }
 
+    var SCROLL_LEFT = 'scrollLeft';
+    var SCROLL_TOP = 'scrollTop';
+    var scrollValues = new Set([SCROLL_LEFT, SCROLL_TOP]);
     var cssStyler = createStyler({
         onRead: function (key, _a) {
             var element = _a.element, preparseOutput = _a.preparseOutput;
             var valueType = getValueType(key);
             if (isTransformProp(key)) {
-                return (valueType)
-                    ? valueType.default || 0
-                    : 0;
+                return valueType ? valueType.default || 0 : 0;
+            }
+            else if (scrollValues.has(key)) {
+                return element[key];
             }
             else {
-                var domValue = window.getComputedStyle(element, null).getPropertyValue(prefixer(key, true)) || 0;
-                return (preparseOutput && valueType && valueType.parse) ? valueType.parse(domValue) : domValue;
+                var domValue = window
+                    .getComputedStyle(element, null)
+                    .getPropertyValue(prefixer(key, true)) || 0;
+                return preparseOutput && valueType && valueType.parse
+                    ? valueType.parse(domValue)
+                    : domValue;
             }
         },
         onRender: function (state, _a, changedValues) {
             var element = _a.element, enableHardwareAcceleration = _a.enableHardwareAcceleration;
-            element.style.cssText += buildStylePropertyString(state, changedValues, enableHardwareAcceleration);
+            element.style.cssText += buildStylePropertyString(state, changedValues, enableHardwareAcceleration, scrollValues);
+            if (changedValues.indexOf(SCROLL_LEFT) !== -1)
+                element.scrollLeft = state.scrollLeft;
+            if (changedValues.indexOf(SCROLL_TOP) !== -1)
+                element.scrollTop = state.scrollTop;
         },
-        aliasMap: aliasMap
+        aliasMap: aliasMap,
+        uncachedValues: scrollValues
     });
     var css = (function (element, props) {
         return cssStyler(__assign({ element: element, enableHardwareAcceleration: true, preparseOutput: true }, props));
@@ -396,15 +418,44 @@
         return svgStyler(props);
     });
 
+    var viewportScroll = createStyler({
+        useCache: false,
+        onRead: function (key) {
+            if (typeof window === 'undefined')
+                return 0;
+            return key === 'top' ? window.pageYOffset : window.pageXOffset;
+        },
+        onRender: function (_a) {
+            var _b = _a.top, top = _b === void 0 ? 0 : _b, _c = _a.left, left = _c === void 0 ? 0 : _c;
+            if (typeof window !== 'undefined' &&
+                typeof top === 'number' &&
+                typeof left === 'number') {
+                window.scrollTo(left, top);
+            }
+        }
+    });
+
     var cache = new WeakMap();
     var createDOMStyler = function (node, props) {
-        var styler = (node instanceof SVGElement) ? svg(node) : css(node, props);
+        var styler;
+        if (node instanceof HTMLElement) {
+            styler = css(node, props);
+        }
+        else if (node instanceof SVGElement) {
+            styler = svg(node);
+        }
+        else if (typeof window !== 'undefined' && node === window) {
+            styler = viewportScroll(node);
+        }
+        heyListen.invariant(styler !== undefined, 'No valid node provided. Node must be HTMLElement, SVGElement or window.');
         cache.set(node, styler);
         return styler;
     };
-    var getStyler = function (node, props) { return cache.has(node) ? cache.get(node) : createDOMStyler(node, props); };
+    var getStyler = function (node, props) {
+        return cache.has(node) ? cache.get(node) : createDOMStyler(node, props);
+    };
     function index (nodeOrSelector, props) {
-        var node = (typeof nodeOrSelector === 'string')
+        var node = typeof nodeOrSelector === 'string'
             ? document.querySelector(nodeOrSelector)
             : nodeOrSelector;
         return getStyler(node, props);
