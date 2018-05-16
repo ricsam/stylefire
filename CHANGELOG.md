@@ -2,6 +2,12 @@
 
 Stylefire adheres to [Semantic Versioning](http://semver.org/).
 
+## [2.0.2] 2018-05-16
+
+### Fixed
+
+Fixing Rollup config.
+
 ## [2.0.1] 2018-05-16
 
 ### Fixed
