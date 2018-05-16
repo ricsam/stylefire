@@ -1,4 +1,8 @@
-import { isTransformProp, sortTransformProps, isTransformOriginProp } from './transform-props';
+import {
+  isTransformProp,
+  sortTransformProps,
+  isTransformOriginProp
+} from './transform-props';
 import prefixer from './prefixer';
 import getValueType from './value-types';
 import { State } from '../styler/types';
@@ -23,14 +27,17 @@ const TRANSFORM = 'transform';
 const TRANSLATE_Z = 'translateZ';
 const TRANSFORM_NONE = ';transform: none';
 
-const styleRule = (key: string, value: string | number) => `${SEMI_COLON}${key}${COLON}${value}`;
+const styleRule = (key: string, value: string | number) =>
+  `${SEMI_COLON}${key}${COLON}${value}`;
 
 export default function buildStylePropertyString(
   state: State,
   changedValues: string[] | true = true,
-  enableHardwareAcceleration: boolean = true
+  enableHardwareAcceleration: boolean = true,
+  blacklist: Set<string>
 ) {
-  const valuesToChange = (changedValues === true) ? Object.keys(state) : changedValues;
+  const valuesToChange =
+    changedValues === true ? Object.keys(state) : changedValues;
   let propertyString = '';
   let transformString = '';
   let hasTransformOrigin = false;
@@ -50,7 +57,10 @@ export default function buildStylePropertyString(
       hasTransform = true;
 
       for (const stateKey in state) {
-        if (isTransformProp(stateKey) && valuesToChange.indexOf(stateKey) === -1) {
+        if (
+          isTransformProp(stateKey) &&
+          valuesToChange.indexOf(stateKey) === -1
+        ) {
           valuesToChange.push(stateKey);
         }
       }
@@ -66,6 +76,8 @@ export default function buildStylePropertyString(
   const totalNumChangedValues = valuesToChange.length;
   for (let i = 0; i < totalNumChangedValues; i++) {
     const key = valuesToChange[i];
+    if (blacklist.has(key)) continue;
+
     const isTransformKey = isTransformProp(key);
     let value: any = state[key];
 
@@ -75,20 +87,26 @@ export default function buildStylePropertyString(
     // We want to check if any transform *isn't* its value type's default, so we can unset the transform
     // if every transform *is*
     if (isTransformKey) {
-      if ((valueType.default && value !== valueType.default) || (!valueType.default && value !== 0)) {
+      if (
+        (valueType.default && value !== valueType.default) ||
+        (!valueType.default && value !== 0)
+      ) {
         transformIsDefault = false;
       }
     }
 
-    if (valueType && (typeof value === NUMBER || typeof value === OBJECT) && valueType.transform) {
+    if (
+      valueType &&
+      (typeof value === NUMBER || typeof value === OBJECT) &&
+      valueType.transform
+    ) {
       value = valueType.transform(value);
     }
 
     // If a transform prop, add to transform string
     if (isTransformKey) {
       transformString += key + '(' + value + ') ';
-      transformHasZ = (key === TRANSLATE_Z) ? true : transformHasZ;
-
+      transformHasZ = key === TRANSLATE_Z ? true : transformHasZ;
     } else if (isTransformOriginProp(key)) {
       state[key] = value;
       hasTransformOrigin = true;
@@ -101,7 +119,11 @@ export default function buildStylePropertyString(
 
   // If we have transform origin, set
   if (hasTransformOrigin) {
-    propertyString += styleRule(TRANSFORM_ORIGIN, `${state.transformOriginX || 0} ${state.transformOriginY || 0} ${state.transformOriginZ || 0}`);
+    propertyString += styleRule(
+      TRANSFORM_ORIGIN,
+      `${state.transformOriginX || 0} ${state.transformOriginY ||
+        0} ${state.transformOriginZ || 0}`
+    );
   }
 
   // If we have transform props, build a transform string
@@ -110,7 +132,10 @@ export default function buildStylePropertyString(
       transformString += `${TRANSLATE_Z}(0)`;
     }
 
-    propertyString += styleRule(TRANSFORM, transformIsDefault ? TRANSFORM_NONE : transformString);
+    propertyString += styleRule(
+      TRANSFORM,
+      transformIsDefault ? TRANSFORM_NONE : transformString
+    );
   }
 
   return propertyString;

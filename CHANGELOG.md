@@ -2,6 +2,17 @@
 
 Stylefire adheres to [Semantic Versioning](http://semver.org/).
 
+## [2.0.0] 2018-05-13
+
+### Added
+
+- `scrollLeft` and `scrollTop` added for `HTMLElement`.
+- Rollup now used to compile modules, filesize down to 3.3kb
+
+### Removed
+
+- Individual `scroll`, `svg` and `css` stylers.
+
 ## [1.2.14] 2018-04-06
 
 ### Fixed
