@@ -416,20 +416,14 @@ var svg = (function (element) {
     return svgStyler(props);
 });
 
-var viewportScroll = createStyler({
+var viewport = createStyler({
     useCache: false,
     onRead: function (key) {
-        if (typeof window === 'undefined')
-            return 0;
-        return key === 'top' ? window.pageYOffset : window.pageXOffset;
+        return key === 'scrollTop' ? window.pageYOffset : window.pageXOffset;
     },
     onRender: function (_a) {
-        var _b = _a.top, top = _b === void 0 ? 0 : _b, _c = _a.left, left = _c === void 0 ? 0 : _c;
-        if (typeof window !== 'undefined' &&
-            typeof top === 'number' &&
-            typeof left === 'number') {
-            window.scrollTo(left, top);
-        }
+        var _b = _a.scrollTop, scrollTop = _b === void 0 ? 0 : _b, _c = _a.scrollLeft, scrollLeft = _c === void 0 ? 0 : _c;
+        return window.scrollTo(scrollLeft, scrollTop);
     }
 });
 
@@ -443,7 +437,7 @@ var createDOMStyler = function (node, props) {
         styler = svg(node);
     }
     else if (typeof window !== 'undefined' && node === window) {
-        styler = viewportScroll(node);
+        styler = viewport(node);
     }
     invariant(styler !== undefined, 'No valid node provided. Node must be HTMLElement, SVGElement or window.');
     cache.set(node, styler);
@@ -460,4 +454,4 @@ function index (nodeOrSelector, props) {
 }
 
 export default index;
-export { createStyler, buildStylePropertyString as buildStyles };
+export { createStyler as createStylerFactory, buildStylePropertyString as buildStyles };

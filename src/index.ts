@@ -2,7 +2,7 @@ import css from './css';
 import buildStyles from './css/render';
 import svg from './svg';
 import viewport from './viewport';
-import createStyler from './styler';
+import createStylerFactory from './styler';
 import { invariant } from 'hey-listen';
 import { Styler, Props } from './styler/types';
 
@@ -43,4 +43,4 @@ export default function(
   return getStyler(node, props);
 }
 
-export { createStyler, Styler, buildStyles };
+export { createStylerFactory, Styler, buildStyles };
