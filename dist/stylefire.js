@@ -1,8 +1,8 @@
 (function (global, factory) {
-    typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports, require('framesync'), require('style-value-types'), require('hey-listen')) :
-    typeof define === 'function' && define.amd ? define(['exports', 'framesync', 'style-value-types', 'hey-listen'], factory) :
-    (factory((global.stylefire = {}),null,global.valueTypes,null));
-}(this, (function (exports,framesync,styleValueTypes,heyListen) { 'use strict';
+    typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports) :
+    typeof define === 'function' && define.amd ? define(['exports'], factory) :
+    (factory((global.stylefire = {})));
+}(this, (function (exports) { 'use strict';
 
     /*! *****************************************************************************
     Copyright (c) Microsoft Corporation. All rights reserved.
@@ -27,6 +27,77 @@
         return t;
     };
 
+    var hasRAF = typeof window !== 'undefined' && window.requestAnimationFrame !== undefined;
+    var prevTime = 0;
+    var onNextFrame = hasRAF
+        ? function (callback) { return window.requestAnimationFrame(callback); }
+        : function (callback) {
+            var currentTime = Date.now();
+            var timeToCall = Math.max(0, 16.7 - (currentTime - prevTime));
+            prevTime = currentTime + timeToCall;
+            setTimeout(function () { return callback(prevTime); }, timeToCall);
+        };
+
+    function createRenderStep(startRenderLoop) {
+        var functionsToRun = [];
+        var functionsToRunNextFrame = [];
+        var numThisFrame = 0;
+        var isProcessing = false;
+        var i = 0;
+        return {
+            cancel: function (callback) {
+                var indexOfCallback = functionsToRunNextFrame.indexOf(callback);
+                if (indexOfCallback !== -1) {
+                    functionsToRunNextFrame.splice(indexOfCallback, 1);
+                }
+            },
+            process: function () {
+                isProcessing = true;
+                _a = [functionsToRunNextFrame, functionsToRun], functionsToRun = _a[0], functionsToRunNextFrame = _a[1];
+                functionsToRunNextFrame.length = 0;
+                numThisFrame = functionsToRun.length;
+                for (i = 0; i < numThisFrame; i++) {
+                    functionsToRun[i]();
+                }
+                isProcessing = false;
+                var _a;
+            },
+            schedule: function (callback, immediate) {
+                if (immediate === void 0) { immediate = false; }
+                startRenderLoop();
+                var addToCurrentBuffer = immediate && isProcessing;
+                var buffer = addToCurrentBuffer ? functionsToRun : functionsToRunNextFrame;
+                if (buffer.indexOf(callback) === -1) {
+                    buffer.push(callback);
+                    if (addToCurrentBuffer) {
+                        numThisFrame = functionsToRun.length;
+                    }
+                }
+            },
+        };
+    }
+
+    var HAS_PERFORMANCE_NOW = typeof performance !== 'undefined' && performance.now !== undefined;
+    var willRenderNextFrame = false;
+    function startRenderLoop() {
+        if (willRenderNextFrame)
+            return;
+        willRenderNextFrame = true;
+        onNextFrame(processFrame);
+    }
+    var frameStart = createRenderStep(startRenderLoop);
+    var frameUpdate = createRenderStep(startRenderLoop);
+    var frameRender = createRenderStep(startRenderLoop);
+    var frameEnd = createRenderStep(startRenderLoop);
+    function processFrame(framestamp) {
+        willRenderNextFrame = false;
+        frameStart.process();
+        frameUpdate.process();
+        frameRender.process();
+        frameEnd.process();
+    }
+    var onFrameRender = frameRender.schedule;
+
     var createStyler = function (_a) {
         var onRead = _a.onRead, onRender = _a.onRender, _b = _a.aliasMap, aliasMap = _b === void 0 ? {} : _b, _c = _a.useCache, useCache = _c === void 0 ? true : _c;
         return function (props) {
@@ -43,7 +114,7 @@
                     }
                     if (!hasChanged) {
                         hasChanged = true;
-                        framesync.onFrameRender(render);
+                        onFrameRender(render);
                     }
                 }
             };
@@ -118,13 +189,13 @@
             }
         }
     };
-    var prefixer = (function (key, asDashCase) {
+    function prefixer (key, asDashCase) {
         if (asDashCase === void 0) { asDashCase = false; }
         var cache = asDashCase ? dashCache : camelCache;
         if (!cache.has(key))
             testPrefix(key);
         return cache.get(key) || key;
-    });
+    }
 
     var axes = ['', 'X', 'Y', 'Z'];
     var order = ['translate', 'scale', 'rotate', 'skew', 'transformPerspective'];
@@ -144,47 +215,186 @@
     var sortTransformProps = function (a, b) { return transformProps.indexOf(a) - transformProps.indexOf(b); };
     var isTransformOriginProp = function (key) { return key === TRANSFORM_ORIGIN_X || key === TRANSFORM_ORIGIN_Y; };
 
-    var valueTypes = {
-        color: styleValueTypes.color,
-        backgroundColor: styleValueTypes.color,
-        outlineColor: styleValueTypes.color,
-        fill: styleValueTypes.color,
-        stroke: styleValueTypes.color,
-        borderColor: styleValueTypes.color,
-        borderTopColor: styleValueTypes.color,
-        borderRightColor: styleValueTypes.color,
-        borderBottomColor: styleValueTypes.color,
-        borderLeftColor: styleValueTypes.color,
-        borderRadius: styleValueTypes.px,
-        width: styleValueTypes.px,
-        maxWidth: styleValueTypes.px,
-        height: styleValueTypes.px,
-        maxHeight: styleValueTypes.px,
-        top: styleValueTypes.px,
-        left: styleValueTypes.px,
-        bottom: styleValueTypes.px,
-        right: styleValueTypes.px,
-        rotate: styleValueTypes.degrees,
-        rotateX: styleValueTypes.degrees,
-        rotateY: styleValueTypes.degrees,
-        rotateZ: styleValueTypes.degrees,
-        scale: styleValueTypes.scale,
-        scaleX: styleValueTypes.scale,
-        scaleY: styleValueTypes.scale,
-        scaleZ: styleValueTypes.scale,
-        skewX: styleValueTypes.degrees,
-        skewY: styleValueTypes.degrees,
-        distance: styleValueTypes.px,
-        translateX: styleValueTypes.px,
-        translateY: styleValueTypes.px,
-        translateZ: styleValueTypes.px,
-        perspective: styleValueTypes.px,
-        opacity: styleValueTypes.alpha,
-        transformOriginX: styleValueTypes.percent,
-        transformOriginY: styleValueTypes.percent,
-        transformOriginZ: styleValueTypes.px
+    /*! *****************************************************************************
+    Copyright (c) Microsoft Corporation. All rights reserved.
+    Licensed under the Apache License, Version 2.0 (the "License"); you may not use
+    this file except in compliance with the License. You may obtain a copy of the
+    License at http://www.apache.org/licenses/LICENSE-2.0
+
+    THIS CODE IS PROVIDED ON AN *AS IS* BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+    KIND, EITHER EXPRESS OR IMPLIED, INCLUDING WITHOUT LIMITATION ANY IMPLIED
+    WARRANTIES OR CONDITIONS OF TITLE, FITNESS FOR A PARTICULAR PURPOSE,
+    MERCHANTABLITY OR NON-INFRINGEMENT.
+
+    See the Apache Version 2.0 License for specific language governing permissions
+    and limitations under the License.
+    ***************************************************************************** */
+
+    var __assign$1 = Object.assign || function __assign(t) {
+        for (var s, i = 1, n = arguments.length; i < n; i++) {
+            s = arguments[i];
+            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p)) t[p] = s[p];
+        }
+        return t;
     };
-    var getValueType = (function (key) { return valueTypes[key]; });
+
+    var clamp = function (min, max) { return function (v) { return Math.max(Math.min(v, max), min); }; };
+    var contains = function (term) { return function (v) { return (typeof v === 'string' && v.indexOf(term) !== -1); }; };
+    var createUnitType = function (unit) { return ({
+        test: contains(unit),
+        parse: parseFloat,
+        transform: function (v) { return "" + v + unit; }
+    }); };
+    var isFirstChars = function (term) { return function (v) { return (typeof v === 'string' && v.indexOf(term) === 0); }; };
+    var getValueFromFunctionString = function (value) { return value.substring(value.indexOf('(') + 1, value.lastIndexOf(')')); };
+    var splitCommaDelimited = function (value) { return typeof value === 'string' ? value.split(/,\s*/) : [value]; };
+    function splitColorValues(terms) {
+        var numTerms = terms.length;
+        return function (v) {
+            var values = {};
+            var valuesArray = splitCommaDelimited(getValueFromFunctionString(v));
+            for (var i = 0; i < numTerms; i++) {
+                values[terms[i]] = (valuesArray[i] !== undefined) ? parseFloat(valuesArray[i]) : 1;
+            }
+            return values;
+        };
+    }
+    var number = {
+        test: function (v) { return typeof v === 'number'; },
+        parse: parseFloat,
+        transform: function (v) { return v; }
+    };
+    var alpha = __assign$1({}, number, { transform: clamp(0, 1) });
+    var degrees = createUnitType('deg');
+    var percent = createUnitType('%');
+    var px = createUnitType('px');
+    var scale = __assign$1({}, number, { default: 1 });
+    var clampRgbUnit = clamp(0, 255);
+    var rgbUnit = __assign$1({}, number, { transform: function (v) { return Math.round(clampRgbUnit(v)); } });
+    var rgbaTemplate = function (_a) {
+        var red = _a.red, green = _a.green, blue = _a.blue, _b = _a.alpha, alpha = _b === void 0 ? 1 : _b;
+        return "rgba(" + red + ", " + green + ", " + blue + ", " + alpha + ")";
+    };
+    var rgba = {
+        test: isFirstChars('rgb'),
+        parse: splitColorValues(['red', 'green', 'blue', 'alpha']),
+        transform: function (_a) {
+            var red = _a.red, green = _a.green, blue = _a.blue, alpha = _a.alpha;
+            return rgbaTemplate({
+                red: rgbUnit.transform(red),
+                green: rgbUnit.transform(green),
+                blue: rgbUnit.transform(blue),
+                alpha: alpha
+            });
+        }
+    };
+    var hslaTemplate = function (_a) {
+        var hue = _a.hue, saturation = _a.saturation, lightness = _a.lightness, _b = _a.alpha, alpha = _b === void 0 ? 1 : _b;
+        return "hsla(" + hue + ", " + saturation + ", " + lightness + ", " + alpha + ")";
+    };
+    var hsla = {
+        test: isFirstChars('hsl'),
+        parse: splitColorValues(['hue', 'saturation', 'lightness', 'alpha']),
+        transform: function (_a) {
+            var hue = _a.hue, saturation = _a.saturation, lightness = _a.lightness, alpha = _a.alpha;
+            return hslaTemplate({
+                hue: Math.round(hue),
+                saturation: percent.transform(saturation),
+                lightness: percent.transform(lightness),
+                alpha: alpha
+            });
+        }
+    };
+    var hex = __assign$1({}, rgba, { test: isFirstChars('#'), parse: function (v) {
+            var r, g, b;
+            if (v.length > 4) {
+                r = v.substr(1, 2);
+                g = v.substr(3, 2);
+                b = v.substr(5, 2);
+            }
+            else {
+                r = v.substr(1, 1);
+                g = v.substr(2, 1);
+                b = v.substr(3, 1);
+                r += r;
+                g += g;
+                b += b;
+            }
+            return {
+                red: parseInt(r, 16),
+                green: parseInt(g, 16),
+                blue: parseInt(b, 16),
+                alpha: 1
+            };
+        } });
+    var isRgba = function (v) { return v.red !== undefined; };
+    var isHsla = function (v) { return v.hue !== undefined; };
+    var color = {
+        test: function (v) { return rgba.test(v) || hsla.test(v) || hex.test(v); },
+        parse: function (v) {
+            if (rgba.test(v)) {
+                return rgba.parse(v);
+            }
+            else if (hsla.test(v)) {
+                return hsla.parse(v);
+            }
+            else if (hex.test(v)) {
+                return hex.parse(v);
+            }
+            return v;
+        },
+        transform: function (v) {
+            if (isRgba(v)) {
+                return rgba.transform(v);
+            }
+            else if (isHsla(v)) {
+                return hsla.transform(v);
+            }
+            return v;
+        },
+    };
+
+    var valueTypes = {
+        color: color,
+        backgroundColor: color,
+        outlineColor: color,
+        fill: color,
+        stroke: color,
+        borderColor: color,
+        borderTopColor: color,
+        borderRightColor: color,
+        borderBottomColor: color,
+        borderLeftColor: color,
+        borderRadius: px,
+        width: px,
+        maxWidth: px,
+        height: px,
+        maxHeight: px,
+        top: px,
+        left: px,
+        bottom: px,
+        right: px,
+        rotate: degrees,
+        rotateX: degrees,
+        rotateY: degrees,
+        rotateZ: degrees,
+        scale: scale,
+        scaleX: scale,
+        scaleY: scale,
+        scaleZ: scale,
+        skewX: degrees,
+        skewY: degrees,
+        distance: px,
+        translateX: px,
+        translateY: px,
+        translateZ: px,
+        perspective: px,
+        opacity: alpha,
+        transformOriginX: percent,
+        transformOriginY: percent,
+        transformOriginZ: px
+    };
+    function getValueType (key) { return valueTypes[key]; }
 
     var aliasMap = {
         x: 'translateX',
@@ -307,9 +517,9 @@
         aliasMap: aliasMap,
         uncachedValues: scrollValues
     });
-    var css = (function (element, props) {
+    function css (element, props) {
         return cssStyler(__assign({ element: element, enableHardwareAcceleration: true, preparseOutput: true }, props));
-    });
+    }
 
     var ZERO_NOT_ZERO = 0.0000001;
     var percentToPixels = function (percent, length) {
@@ -372,16 +582,16 @@
     };
 
     var valueTypes$1 = {
-        fill: styleValueTypes.color,
-        stroke: styleValueTypes.color,
-        scale: styleValueTypes.scale,
-        scaleX: styleValueTypes.scale,
-        scaleY: styleValueTypes.scale,
-        opacity: styleValueTypes.alpha,
-        fillOpacity: styleValueTypes.alpha,
-        strokeOpacity: styleValueTypes.alpha
+        fill: color,
+        stroke: color,
+        scale: scale,
+        scaleX: scale,
+        scaleY: scale,
+        opacity: alpha,
+        fillOpacity: alpha,
+        strokeOpacity: alpha
     };
-    var getValueType$1 = (function (key) { return valueTypes$1[key]; });
+    function getValueType$1 (key) { return valueTypes$1[key]; }
 
     var svgStyler = createStyler({
         onRead: function (key, _a) {
@@ -404,7 +614,7 @@
             background: 'fill'
         }
     });
-    var svg = (function (element) {
+    function svg (element) {
         var _a = element.getBBox(), x = _a.x, y = _a.y, width = _a.width, height = _a.height;
         var props = {
             element: element,
@@ -416,7 +626,7 @@
             props.pathLength = element.getTotalLength();
         }
         return svgStyler(props);
-    });
+    }
 
     var viewport = createStyler({
         useCache: false,
@@ -428,6 +638,16 @@
             return window.scrollTo(scrollLeft, scrollTop);
         }
     });
+
+    var HEY_LISTEN = 'Hey, listen! ';
+    var invariant = function () { };
+    if (process.env.NODE_ENV !== 'production') {
+        invariant = function (check, message) {
+            if (!check) {
+                throw new Error(HEY_LISTEN.toUpperCase() + message);
+            }
+        };
+    }
 
     var cache = new WeakMap();
     var createDOMStyler = function (node, props) {
@@ -441,7 +661,7 @@
         else if (typeof window !== 'undefined' && node === window) {
             styler = viewport(node);
         }
-        heyListen.invariant(styler !== undefined, 'No valid node provided. Node must be HTMLElement, SVGElement or window.');
+        invariant(styler !== undefined, 'No valid node provided. Node must be HTMLElement, SVGElement or window.');
         cache.set(node, styler);
         return styler;
     };

@@ -18,7 +18,8 @@
     "declaration": true,
     "paths": {
       "~/*": ["*"]
-    }
+    },
+    "importHelpers": true
   },
   "include": ["src/**/*"],
   "exclude": ["src/_tests"]
