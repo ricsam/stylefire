@@ -189,13 +189,13 @@
             }
         }
     };
-    function prefixer (key, asDashCase) {
+    var prefixer = (function (key, asDashCase) {
         if (asDashCase === void 0) { asDashCase = false; }
         var cache = asDashCase ? dashCache : camelCache;
         if (!cache.has(key))
             testPrefix(key);
         return cache.get(key) || key;
-    }
+    });
 
     var axes = ['', 'X', 'Y', 'Z'];
     var order = ['translate', 'scale', 'rotate', 'skew', 'transformPerspective'];
@@ -215,98 +215,63 @@
     var sortTransformProps = function (a, b) { return transformProps.indexOf(a) - transformProps.indexOf(b); };
     var isTransformOriginProp = function (key) { return key === TRANSFORM_ORIGIN_X || key === TRANSFORM_ORIGIN_Y; };
 
-    /*! *****************************************************************************
-    Copyright (c) Microsoft Corporation. All rights reserved.
-    Licensed under the Apache License, Version 2.0 (the "License"); you may not use
-    this file except in compliance with the License. You may obtain a copy of the
-    License at http://www.apache.org/licenses/LICENSE-2.0
-
-    THIS CODE IS PROVIDED ON AN *AS IS* BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
-    KIND, EITHER EXPRESS OR IMPLIED, INCLUDING WITHOUT LIMITATION ANY IMPLIED
-    WARRANTIES OR CONDITIONS OF TITLE, FITNESS FOR A PARTICULAR PURPOSE,
-    MERCHANTABLITY OR NON-INFRINGEMENT.
-
-    See the Apache Version 2.0 License for specific language governing permissions
-    and limitations under the License.
-    ***************************************************************************** */
-
-    var __assign$1 = Object.assign || function __assign(t) {
-        for (var s, i = 1, n = arguments.length; i < n; i++) {
-            s = arguments[i];
-            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p)) t[p] = s[p];
-        }
-        return t;
-    };
-
-    var clamp = function (min, max) { return function (v) { return Math.max(Math.min(v, max), min); }; };
-    var contains = function (term) { return function (v) { return (typeof v === 'string' && v.indexOf(term) !== -1); }; };
-    var createUnitType = function (unit) { return ({
+    const clamp = (min, max) => (v) => Math.max(Math.min(v, max), min);
+    const contains = (term) => (v) => (typeof v === 'string' && v.indexOf(term) !== -1);
+    const createUnitType = (unit) => ({
         test: contains(unit),
         parse: parseFloat,
-        transform: function (v) { return "" + v + unit; }
-    }); };
-    var isFirstChars = function (term) { return function (v) { return (typeof v === 'string' && v.indexOf(term) === 0); }; };
-    var getValueFromFunctionString = function (value) { return value.substring(value.indexOf('(') + 1, value.lastIndexOf(')')); };
-    var splitCommaDelimited = function (value) { return typeof value === 'string' ? value.split(/,\s*/) : [value]; };
+        transform: (v) => `${v}${unit}`
+    });
+    const isFirstChars = (term) => (v) => (typeof v === 'string' && v.indexOf(term) === 0);
+    const getValueFromFunctionString = (value) => value.substring(value.indexOf('(') + 1, value.lastIndexOf(')'));
+    const splitCommaDelimited = (value) => typeof value === 'string' ? value.split(/,\s*/) : [value];
     function splitColorValues(terms) {
-        var numTerms = terms.length;
+        const numTerms = terms.length;
         return function (v) {
-            var values = {};
-            var valuesArray = splitCommaDelimited(getValueFromFunctionString(v));
-            for (var i = 0; i < numTerms; i++) {
+            const values = {};
+            const valuesArray = splitCommaDelimited(getValueFromFunctionString(v));
+            for (let i = 0; i < numTerms; i++) {
                 values[terms[i]] = (valuesArray[i] !== undefined) ? parseFloat(valuesArray[i]) : 1;
             }
             return values;
         };
     }
-    var number = {
-        test: function (v) { return typeof v === 'number'; },
+    const number = {
+        test: (v) => typeof v === 'number',
         parse: parseFloat,
-        transform: function (v) { return v; }
+        transform: (v) => v
     };
-    var alpha = __assign$1({}, number, { transform: clamp(0, 1) });
-    var degrees = createUnitType('deg');
-    var percent = createUnitType('%');
-    var px = createUnitType('px');
-    var scale = __assign$1({}, number, { default: 1 });
-    var clampRgbUnit = clamp(0, 255);
-    var rgbUnit = __assign$1({}, number, { transform: function (v) { return Math.round(clampRgbUnit(v)); } });
-    var rgbaTemplate = function (_a) {
-        var red = _a.red, green = _a.green, blue = _a.blue, _b = _a.alpha, alpha = _b === void 0 ? 1 : _b;
-        return "rgba(" + red + ", " + green + ", " + blue + ", " + alpha + ")";
-    };
-    var rgba = {
+    const alpha = Object.assign({}, number, { transform: clamp(0, 1) });
+    const degrees = createUnitType('deg');
+    const percent = createUnitType('%');
+    const px = createUnitType('px');
+    const scale = Object.assign({}, number, { default: 1 });
+    const clampRgbUnit = clamp(0, 255);
+    const rgbUnit = Object.assign({}, number, { transform: (v) => Math.round(clampRgbUnit(v)) });
+    const rgbaTemplate = ({ red, green, blue, alpha = 1 }) => `rgba(${red}, ${green}, ${blue}, ${alpha})`;
+    const rgba = {
         test: isFirstChars('rgb'),
         parse: splitColorValues(['red', 'green', 'blue', 'alpha']),
-        transform: function (_a) {
-            var red = _a.red, green = _a.green, blue = _a.blue, alpha = _a.alpha;
-            return rgbaTemplate({
-                red: rgbUnit.transform(red),
-                green: rgbUnit.transform(green),
-                blue: rgbUnit.transform(blue),
-                alpha: alpha
-            });
-        }
+        transform: ({ red, green, blue, alpha }) => rgbaTemplate({
+            red: rgbUnit.transform(red),
+            green: rgbUnit.transform(green),
+            blue: rgbUnit.transform(blue),
+            alpha
+        })
     };
-    var hslaTemplate = function (_a) {
-        var hue = _a.hue, saturation = _a.saturation, lightness = _a.lightness, _b = _a.alpha, alpha = _b === void 0 ? 1 : _b;
-        return "hsla(" + hue + ", " + saturation + ", " + lightness + ", " + alpha + ")";
-    };
-    var hsla = {
+    const hslaTemplate = ({ hue, saturation, lightness, alpha = 1 }) => `hsla(${hue}, ${saturation}, ${lightness}, ${alpha})`;
+    const hsla = {
         test: isFirstChars('hsl'),
         parse: splitColorValues(['hue', 'saturation', 'lightness', 'alpha']),
-        transform: function (_a) {
-            var hue = _a.hue, saturation = _a.saturation, lightness = _a.lightness, alpha = _a.alpha;
-            return hslaTemplate({
-                hue: Math.round(hue),
-                saturation: percent.transform(saturation),
-                lightness: percent.transform(lightness),
-                alpha: alpha
-            });
-        }
+        transform: ({ hue, saturation, lightness, alpha }) => hslaTemplate({
+            hue: Math.round(hue),
+            saturation: percent.transform(saturation),
+            lightness: percent.transform(lightness),
+            alpha
+        })
     };
-    var hex = __assign$1({}, rgba, { test: isFirstChars('#'), parse: function (v) {
-            var r, g, b;
+    const hex = Object.assign({}, rgba, { test: isFirstChars('#'), parse: (v) => {
+            let r, g, b;
             if (v.length > 4) {
                 r = v.substr(1, 2);
                 g = v.substr(3, 2);
@@ -327,11 +292,11 @@
                 alpha: 1
             };
         } });
-    var isRgba = function (v) { return v.red !== undefined; };
-    var isHsla = function (v) { return v.hue !== undefined; };
-    var color = {
-        test: function (v) { return rgba.test(v) || hsla.test(v) || hex.test(v); },
-        parse: function (v) {
+    const isRgba = (v) => v.red !== undefined;
+    const isHsla = (v) => v.hue !== undefined;
+    const color = {
+        test: (v) => rgba.test(v) || hsla.test(v) || hex.test(v),
+        parse: (v) => {
             if (rgba.test(v)) {
                 return rgba.parse(v);
             }
@@ -343,7 +308,7 @@
             }
             return v;
         },
-        transform: function (v) {
+        transform: (v) => {
             if (isRgba(v)) {
                 return rgba.transform(v);
             }
@@ -394,7 +359,7 @@
         transformOriginY: percent,
         transformOriginZ: px
     };
-    function getValueType (key) { return valueTypes[key]; }
+    var getValueType = (function (key) { return valueTypes[key]; });
 
     var aliasMap = {
         x: 'translateX',
@@ -517,9 +482,9 @@
         aliasMap: aliasMap,
         uncachedValues: scrollValues
     });
-    function css (element, props) {
+    var css = (function (element, props) {
         return cssStyler(__assign({ element: element, enableHardwareAcceleration: true, preparseOutput: true }, props));
-    }
+    });
 
     var ZERO_NOT_ZERO = 0.0000001;
     var percentToPixels = function (percent, length) {
@@ -591,7 +556,7 @@
         fillOpacity: alpha,
         strokeOpacity: alpha
     };
-    function getValueType$1 (key) { return valueTypes$1[key]; }
+    var getValueType$1 = (function (key) { return valueTypes$1[key]; });
 
     var svgStyler = createStyler({
         onRead: function (key, _a) {
@@ -614,7 +579,7 @@
             background: 'fill'
         }
     });
-    function svg (element) {
+    var svg = (function (element) {
         var _a = element.getBBox(), x = _a.x, y = _a.y, width = _a.width, height = _a.height;
         var props = {
             element: element,
@@ -626,7 +591,7 @@
             props.pathLength = element.getTotalLength();
         }
         return svgStyler(props);
-    }
+    });
 
     var viewport = createStyler({
         useCache: false,

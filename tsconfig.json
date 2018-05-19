@@ -1,11 +1,11 @@
 {
   "compilerOptions": {
     "module": "ESNext",
+    "moduleResolution": "node",
     "noImplicitAny": true,
     "removeComments": true,
     "preserveConstEnums": true,
     "sourceMap": true,
-    "noImplicitAny": true,
     "noUnusedLocals": true,
     "target": "es5",
     "rootDir": "src",
@@ -16,9 +16,6 @@
     "alwaysStrict": true,
     "forceConsistentCasingInFileNames": true,
     "declaration": true,
-    "paths": {
-      "~/*": ["*"]
-    },
     "importHelpers": true
   },
   "include": ["src/**/*"],
