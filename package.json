@@ -1,6 +1,6 @@
 {
   "name": "stylefire",
-  "version": "2.0.2",
+  "version": "2.0.3",
   "description": "Performant, simplified stylers for CSS, SVG, path and DOM scroll.",
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
@@ -17,7 +17,7 @@
     "lint": "tslint -c tslint.json 'src/**/*.{ts}'",
     "test": "jest",
     "measure": "gzip -c dist/stylefire.min.js | wc -c",
-    "prepublishOnly": "npm run lint && npm run build"
+    "prepublishOnly": "yarn build"
   },
   "repository": {
     "type": "git",
@@ -47,7 +47,7 @@
     "rollup-plugin-typescript2": "^0.14.0",
     "rollup-plugin-uglify": "^3.0.0",
     "ts-jest": "^20.0.10",
-    "typescript": "^2.4.2",
+    "typescript": "^2.9.2",
     "uglify-js": "^3.3.25",
     "webpack": "^3.0.0"
   },
