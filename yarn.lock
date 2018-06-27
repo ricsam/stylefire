@@ -3430,9 +3430,9 @@ strip-json-comments@~2.0.1:
   version "2.0.1"
   resolved "https://registry.yarnpkg.com/strip-json-comments/-/strip-json-comments-2.0.1.tgz#3c531942e908c2697c0ec344858c286c7ca0a60a"
 
-style-value-types@3.0.1:
-  version "3.0.1"
-  resolved "https://registry.yarnpkg.com/style-value-types/-/style-value-types-3.0.1.tgz#370159141e7958173b1a977572ca9f03342feda8"
+style-value-types@^3.0.2:
+  version "3.0.2"
+  resolved "https://registry.yarnpkg.com/style-value-types/-/style-value-types-3.0.2.tgz#6623aba812390a681ab84c7153097d8542518604"
 
 supports-color@^2.0.0:
   version "2.0.0"
