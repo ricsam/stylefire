@@ -2,6 +2,12 @@
 
 Stylefire adheres to [Semantic Versioning](http://semver.org/).
 
+## [2.0.3] 2018-06-21
+
+### Updated
+
+- `style-value-types@2.0.1`
+
 ## [2.0.2] 2018-05-16
 
 ### Fixed

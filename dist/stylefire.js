@@ -19,12 +19,15 @@
     and limitations under the License.
     ***************************************************************************** */
 
-    var __assign = Object.assign || function __assign(t) {
-        for (var s, i = 1, n = arguments.length; i < n; i++) {
-            s = arguments[i];
-            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p)) t[p] = s[p];
-        }
-        return t;
+    var __assign = function() {
+        __assign = Object.assign || function __assign(t) {
+            for (var s, i = 1, n = arguments.length; i < n; i++) {
+                s = arguments[i];
+                for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p)) t[p] = s[p];
+            }
+            return t;
+        };
+        return __assign.apply(this, arguments);
     };
 
     var hasRAF = typeof window !== 'undefined' && window.requestAnimationFrame !== undefined;
@@ -189,13 +192,13 @@
             }
         }
     };
-    function prefixer (key, asDashCase) {
+    var prefixer = (function (key, asDashCase) {
         if (asDashCase === void 0) { asDashCase = false; }
         var cache = asDashCase ? dashCache : camelCache;
         if (!cache.has(key))
             testPrefix(key);
         return cache.get(key) || key;
-    }
+    });
 
     var axes = ['', 'X', 'Y', 'Z'];
     var order = ['translate', 'scale', 'rotate', 'skew', 'transformPerspective'];
@@ -376,7 +379,7 @@
         transformOriginY: percent,
         transformOriginZ: px
     };
-    function getValueType (key) { return valueTypes[key]; }
+    var getValueType = (function (key) { return valueTypes[key]; });
 
     var aliasMap = {
         x: 'translateX',
@@ -499,9 +502,9 @@
         aliasMap: aliasMap,
         uncachedValues: scrollValues
     });
-    function css (element, props) {
+    var css = (function (element, props) {
         return cssStyler(__assign({ element: element, enableHardwareAcceleration: true, preparseOutput: true }, props));
-    }
+    });
 
     var ZERO_NOT_ZERO = 0.0000001;
     var percentToPixels = function (percent, length) {
@@ -573,7 +576,7 @@
         fillOpacity: alpha,
         strokeOpacity: alpha
     };
-    function getValueType$1 (key) { return valueTypes$1[key]; }
+    var getValueType$1 = (function (key) { return valueTypes$1[key]; });
 
     var svgStyler = createStyler({
         onRead: function (key, _a) {
@@ -596,7 +599,7 @@
             background: 'fill'
         }
     });
-    function svg (element) {
+    var svg = (function (element) {
         var _a = element.getBBox(), x = _a.x, y = _a.y, width = _a.width, height = _a.height;
         var props = {
             element: element,
@@ -608,7 +611,7 @@
             props.pathLength = element.getTotalLength();
         }
         return svgStyler(props);
-    }
+    });
 
     var viewport = createStyler({
         useCache: false,
