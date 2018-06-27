@@ -98,14 +98,14 @@ var testPrefix = function (key) {
         }
     }
 };
-var prefixer = function (key, asDashCase) {
+function prefixer(key, asDashCase) {
     if (asDashCase === void 0) {
         asDashCase = false;
     }
     var cache = asDashCase ? dashCache : camelCache;
     if (!cache.has(key)) testPrefix(key);
     return cache.get(key) || key;
-};
+}
 
 var axes = ['', 'X', 'Y', 'Z'];
 var order = ['translate', 'scale', 'rotate', 'skew', 'transformPerspective'];
@@ -171,9 +171,9 @@ var valueTypes = {
     transformOriginY: percent,
     transformOriginZ: px
 };
-var getValueType = function (key) {
+function getValueType(key) {
     return valueTypes[key];
-};
+}
 
 var aliasMap = {
     x: 'translateX',
@@ -286,9 +286,9 @@ var cssStyler = /*#__PURE__*/createStyler({
     aliasMap: aliasMap,
     uncachedValues: scrollValues
 });
-var css = function (element, props) {
+function css(element, props) {
     return cssStyler(__assign({ element: element, enableHardwareAcceleration: true, preparseOutput: true }, props));
-};
+}
 
 var ZERO_NOT_ZERO = 0.0000001;
 var percentToPixels = function (percent$$1, length) {
@@ -357,9 +357,9 @@ var valueTypes$1 = {
     fillOpacity: alpha,
     strokeOpacity: alpha
 };
-var getValueType$1 = function (key) {
+function getValueType$1(key) {
     return valueTypes$1[key];
-};
+}
 
 var svgStyler = /*#__PURE__*/createStyler({
     onRead: function (key, _a) {
@@ -384,7 +384,7 @@ var svgStyler = /*#__PURE__*/createStyler({
         background: 'fill'
     }
 });
-var svg = function (element) {
+function svg(element) {
     var _a = element.getBBox(),
         x = _a.x,
         y = _a.y,
@@ -400,7 +400,7 @@ var svg = function (element) {
         props.pathLength = element.getTotalLength();
     }
     return svgStyler(props);
-};
+}
 
 var viewport = /*#__PURE__*/createStyler({
     useCache: false,
