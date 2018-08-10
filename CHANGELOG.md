@@ -2,7 +2,7 @@
 
 Stylefire adheres to [Semantic Versioning](http://semver.org/).
 
-## [2.0.6] 2018-08-10
+## [2.0.7] 2018-08-10
 
 ### Fixed
 

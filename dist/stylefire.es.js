@@ -159,6 +159,7 @@ var valueTypes = {
     scaleX: scale,
     scaleY: scale,
     scaleZ: scale,
+    skew: degrees,
     skewX: degrees,
     skewY: degrees,
     distance: px,

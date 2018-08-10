@@ -19,15 +19,12 @@
     and limitations under the License.
     ***************************************************************************** */
 
-    var __assign = function() {
-        __assign = Object.assign || function __assign(t) {
-            for (var s, i = 1, n = arguments.length; i < n; i++) {
-                s = arguments[i];
-                for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p)) t[p] = s[p];
-            }
-            return t;
-        };
-        return __assign.apply(this, arguments);
+    var __assign = Object.assign || function __assign(t) {
+        for (var s, i = 1, n = arguments.length; i < n; i++) {
+            s = arguments[i];
+            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p)) t[p] = s[p];
+        }
+        return t;
     };
 
     var hasRAF = typeof window !== 'undefined' && window.requestAnimationFrame !== undefined;
@@ -367,6 +364,7 @@
         scaleX: scale,
         scaleY: scale,
         scaleZ: scale,
+        skew: degrees,
         skewX: degrees,
         skewY: degrees,
         distance: px,
@@ -379,7 +377,7 @@
         transformOriginY: percent,
         transformOriginZ: px
     };
-    var getValueType = (function (key) { return valueTypes[key]; });
+    var getValueType$1 = (function (key) { return valueTypes[key]; });
 
     var aliasMap = {
         x: 'translateX',
@@ -432,7 +430,7 @@
                 continue;
             var isTransformKey = isTransformProp(key);
             var value = state[key];
-            var valueType = getValueType(key);
+            var valueType = getValueType$1(key);
             if (isTransformKey) {
                 if ((valueType.default && value !== valueType.default) ||
                     (!valueType.default && value !== 0)) {
@@ -475,7 +473,7 @@
     var cssStyler = createStyler({
         onRead: function (key, _a) {
             var element = _a.element, preparseOutput = _a.preparseOutput;
-            var valueType = getValueType(key);
+            var valueType = getValueType$1(key);
             if (isTransformProp(key)) {
                 return valueType ? valueType.default || 0 : 0;
             }
@@ -576,7 +574,7 @@
         fillOpacity: alpha,
         strokeOpacity: alpha
     };
-    var getValueType$1 = (function (key) { return valueTypes$1[key]; });
+    var getValueType$2 = (function (key) { return valueTypes$1[key]; });
 
     var svgStyler = createStyler({
         onRead: function (key, _a) {
@@ -585,7 +583,7 @@
                 return element.getAttribute(key);
             }
             else {
-                var valueType = getValueType$1(key);
+                var valueType = getValueType$2(key);
                 return valueType ? valueType.default : 0;
             }
         },
