@@ -43,6 +43,7 @@ const valueTypes: { [key: string]: ValueType } = {
   scaleX: scale,
   scaleY: scale,
   scaleZ: scale,
+  skew: degrees,
   skewX: degrees,
   skewY: degrees,
   distance: px,

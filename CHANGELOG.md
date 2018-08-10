@@ -2,6 +2,12 @@
 
 Stylefire adheres to [Semantic Versioning](http://semver.org/).
 
+## [2.0.6] 2018-08-10
+
+### Fixed
+
+- Adding value type for `skew`.
+
 ## [2.0.3] 2018-06-21
 
 ### Updated
